@@ -31,6 +31,7 @@ public class CameraManager : MonoBehaviour {
 	{
 		camTrans = Camera.main.transform;
 		pivot = camTrans.parent;
+		target = GameObject.Find("Player").transform;
 	}
 
 	void FollowTarget(float d)
