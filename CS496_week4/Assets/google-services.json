@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "518532574769-2h54ldhfu50b66ijh764r4pg0nocsvu3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.madcamp.week4",
+            "certificate_hash": "b2ae9b1dab8753d3334305951a7b6af76ab268f1"
+          }
+        },
+        {
           "client_id": "518532574769-80g7gupujholr4e9eaggqq0rs3la0fup.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
