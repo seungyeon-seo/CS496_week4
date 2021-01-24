@@ -21,7 +21,6 @@ public class MenuChoice : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.forward, out hit))
         {
-            Debug.Log($"hit with {hit.collider.name}");
             if (hit.collider.tag == "Player" || hit.collider.tag == "Ground")
             {
                 ChoiceMenu();
@@ -39,13 +38,19 @@ public class MenuChoice : MonoBehaviour
         switch (menuOption)
         {
             case 0:
-                SceneManager.LoadScene("SampleScene");
+                SceneManager.LoadScene("LobbyScene");
                 break;
             case 1:
                 Debug.Log("LoginScene");
                 break;
             case 2:
                 Debug.Log("GameInfoScene");
+                break;
+            case 3:
+                SceneManager.LoadScene("MenuScene");
+                break;
+            case 4:
+                // GameObject.Find("Login_Manager").GetComponent<LoginManager>().Submit();
                 break;
         }
     }
