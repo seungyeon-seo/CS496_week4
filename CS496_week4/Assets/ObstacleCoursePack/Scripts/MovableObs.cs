@@ -51,7 +51,10 @@ public class MovableObs : MonoBehaviour
 				moveType = 1;
 		}
 		else
-			distance = 2f;
+		{
+			distance = 5f;
+			speed = 5f;
+		}
 	}
 
 	// Update is called once per frame
