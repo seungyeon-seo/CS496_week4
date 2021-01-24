@@ -36,17 +36,19 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         playerNumber = PhotonNetwork.LocalPlayer.ActorNumber - 1;
         Vector3 initPosition;
+        Quaternion rotation;
         switch (mapNumber)
         {
             case 0:
             default:
                 initPosition = new Vector3(-0.41f, 1.23f, -0.09f);
+                rotation = new Quaternion(0, 0, 0, 0);
                 break;
             case 2:
-                initPosition = new Vector3(15f, 0.75f, -0.19f);
+                initPosition = new Vector3(-3f, 1.3f, -15f);
+                rotation = new Quaternion(0, 5, 0, 0);
                 break;
         }
-        Quaternion rotation = new Quaternion(0, 0, 0, 0);
 
         PhotonNetwork.Instantiate(playerPrefab.name, initPosition, rotation);
     }
