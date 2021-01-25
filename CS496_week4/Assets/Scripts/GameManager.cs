@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             case 2:
                 time += 1;
-                if (time == 400)
+                if (time == 350 && PhotonNetwork.IsMasterClient)
                 {
                     SpawnBall();
                 }

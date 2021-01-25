@@ -262,4 +262,5 @@ public class MapCharacterControls : MonoBehaviourPun
 			winText.text = "You LOSE";
 		}
 	}
+
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Photon.Pun;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,9 +14,12 @@ public class FallingBall : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
         if (transform.position.y < 1.5f)
         {
-            gameObject.SetActive(false);
+            PhotonNetwork.Destroy(gameObject);
+            // gameObject.SetActive(false);
         }
     }
 }
