@@ -16,7 +16,8 @@ public class MovableObs : MonoBehaviour
 	/* 0: horizontal
 	   1: vertical
 	   2: up
-	   3: down   */
+	   3: down
+	   4: horizontal2*/
 
 	void Awake()
 	{
@@ -37,6 +38,17 @@ public class MovableObs : MonoBehaviour
 				startPos = new Vector3(startPos.x, startPos.y + distance, startPos.z);
 				transform.position += Vector3.down * offset;
 				break;
+			case 4:
+				transform.position += Vector3.right * offset;
+				distance = 9f;
+				speed = 15f;
+				break;
+			case 5:
+				distance = 9f;
+				speed = 15f;
+				startPos = new Vector3(startPos.x - distance, startPos.y, startPos.z);
+				transform.position += Vector3.right * offset;
+				break;
 		}
 	}
 	private void setType()
@@ -48,8 +60,8 @@ public class MovableObs : MonoBehaviour
 			else
 				moveType = 1;
 		}
-		else
-		{
+		else if (moveType < 4)
+        {
 			distance = 5f;
 			speed = 5f;
 		}
@@ -61,6 +73,8 @@ public class MovableObs : MonoBehaviour
 		switch (moveType)
 		{
 			case 0:
+			case 4:
+			case 5:
 				if (isForward)
 				{
 					if (transform.position.x < startPos.x + distance)
