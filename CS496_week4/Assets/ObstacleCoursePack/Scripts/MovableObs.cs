@@ -22,7 +22,6 @@ public class MovableObs : MonoBehaviour
 	{
 		startPos = transform.position;
 		setType();
-		Debug.Log($"start pos: {startPos.ToString()}");
 		switch (moveType)
 		{
 			case 0:
@@ -39,7 +38,6 @@ public class MovableObs : MonoBehaviour
 				transform.position += Vector3.down * offset;
 				break;
 		}
-		Debug.Log($"moveType: {moveType}");
 	}
 	private void setType()
 	{
@@ -109,7 +107,6 @@ public class MovableObs : MonoBehaviour
 					if (transform.position.y > startPos.y - distance)
 					{
 						transform.position += Vector3.down * Time.deltaTime * speed;
-						Debug.Log($"1: {transform.position.ToString()} < {startPos.y + distance}");
 					}
                     else
 						isForward = false;
@@ -119,7 +116,6 @@ public class MovableObs : MonoBehaviour
 					if (transform.position.y < startPos.y)
 					{
 						transform.position -= Vector3.down * Time.deltaTime * speed;
-						Debug.Log($"2: {transform.position.ToString()} < {startPos.y+distance}");
 					}
 					else
 						isForward = true;

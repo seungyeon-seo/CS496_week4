@@ -105,6 +105,7 @@ public class CameraManager : MonoBehaviour {
 		}
 		// check if the distance is greater than the max camera distance;
 		if (dist > cameraDist) dist = cameraDist;
+		dist = cameraDist;
 		camTrans.localPosition = new Vector3(0, 0, -dist);
 	}
 
