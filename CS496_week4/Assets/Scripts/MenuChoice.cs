@@ -12,7 +12,6 @@ public class MenuChoice : MonoBehaviour
     void Start()
     {
         initPos = transform.position;
-        Debug.Log("init pos is " + initPos.y);
     }
 
     // Update is called once per frame

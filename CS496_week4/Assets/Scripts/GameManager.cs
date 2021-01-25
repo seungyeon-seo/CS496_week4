@@ -22,12 +22,14 @@ public class GameManager : MonoBehaviourPunCallbacks
     public int playerNumber;
 
     int time;
+    public GameObject winner;
     
     // Start is called before the first frame update
     void Start()
     {
         SpawnPlayer();
         time = 0;
+        winner = null;
     }
 
     // Update is called once per frame
@@ -37,17 +39,16 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             case 2:
                 time += 1;
-                if (time == 200)
+                if (time == 400)
                 {
                     SpawnBall();
                 }
-                checkRespawn();
                 break;
         }
         
     }
 
-    private void SpawnPlayer()
+    public void SpawnPlayer()
     {
         playerNumber = PhotonNetwork.LocalPlayer.ActorNumber - 1;
         Vector3 initPosition;
@@ -66,28 +67,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
 
         PhotonNetwork.Instantiate(playerPrefab.name, initPosition, rotation);
-    }
-
-    void checkRespawn()
-    {
-        GameObject player = GameObject.Find(playerPrefab.name+"(Clone)");
-        if (player == null)
-            return;
-        Vector3 pos = player.transform.position;
-        if (pos.x < -6.95 || pos.x > 6.67 )
-        {
-            RespawnPlayer(player);
-        }
-        else if (pos.y < -2.19)
-        {
-            RespawnPlayer(player);
-        }
-    }
-
-    void RespawnPlayer(GameObject player)
-    {
-        player.SetActive(false);
-        SpawnPlayer();
     }
 
     void SpawnBall()
