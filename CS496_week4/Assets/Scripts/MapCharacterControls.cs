@@ -140,6 +140,7 @@ public class MapCharacterControls : MonoBehaviourPun
 
 	private void Update()
 	{
+		CheckWinner();
 		if (!photonView.IsMine)
 			return;
 		float h = Input.GetAxis("Horizontal");
@@ -162,8 +163,6 @@ public class MapCharacterControls : MonoBehaviourPun
 			}
 		}
 		CheckRespawn();
-		CheckGoal();
-		CheckWinner();
 	}
 
 	float CalculateJumpVerticalSpeed()
@@ -230,37 +229,30 @@ public class MapCharacterControls : MonoBehaviourPun
 		Vector3 pos = gameObject.transform.position;
 		if (pos.x < -6.95 || pos.x > 6.67)
 		{
-			gameObject.SetActive(false);
+			PhotonNetwork.Destroy(gameObject);
 			GameObject.Find("GameManager").GetComponent<GameManager>().SpawnPlayer();
 		}
 		else if (pos.y < -2.19)
 		{
-			gameObject.SetActive(false);
+			PhotonNetwork.Destroy(gameObject);
 			GameObject.Find("GameManager").GetComponent<GameManager>().SpawnPlayer();
-		}
-	}
-	void CheckGoal()
-	{
-		Vector3 pos = gameObject.transform.position;
-		if (pos.z >= 129)
-		{
-			GameObject.Find("GameManager").GetComponent<GameManager>().winner = gameObject;
 		}
 	}
 
 	void CheckWinner()
-    {
-		GameObject winner = GameObject.Find("GameManager").GetComponent<GameManager>().winner;
+	{
+		Vector3 pos = gameObject.transform.position;
 		TextMesh winText = GameObject.Find("winText").GetComponent<TextMesh>();
-		if (winner == null)
-			return;
-		else if (winner.Equals(gameObject))
-        {
-			winText.text = "You WIN";
-        } else
-        {
-			winText.text = "You LOSE";
+		if (pos.z >= 129)
+		{
+			if (photonView.IsMine)
+			{
+				winText.text = "You WIN";
+			}
+			else
+			{
+				winText.text = "You LOSE";
+			}
 		}
 	}
-
 }

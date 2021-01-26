@@ -14,6 +14,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
+        Cursor.visible = true;
         infoText.text = "Connecting To Master Service...";
         PhotonNetwork.GameVersion = "1";
         PhotonNetwork.ConnectUsingSettings();

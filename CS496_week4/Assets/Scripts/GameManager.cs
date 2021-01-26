@@ -19,17 +19,20 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public GameObject playerPrefab;
     public GameObject ballPrefab;
+    public GameObject startLinePrefab;
     public int playerNumber;
 
     int time;
-    public GameObject winner;
     
     // Start is called before the first frame update
     void Start()
     {
         SpawnPlayer();
         time = 0;
-        winner = null;
+        if (PhotonNetwork.IsMasterClient)
+        {
+            SpawnStartLine();
+        }
     }
 
     // Update is called once per frame
@@ -61,7 +64,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                 rotation = new Quaternion(0, 0, 0, 0);
                 break;
             case 2:
-                initPosition = new Vector3(-3f, 1.3f, -15f);
+                initPosition = new Vector3(-3f + (2*playerNumber), 1.3f, -20f);
                 rotation = new Quaternion(0, 5, 0, 0);
                 break;
         }
@@ -74,5 +77,11 @@ public class GameManager : MonoBehaviourPunCallbacks
         time = 0; 
         Vector3 initPosition = new Vector3(Random.Range(-4, 3.8f), 17.34f, 51.89f);
         PhotonNetwork.Instantiate(ballPrefab.name, initPosition, new Quaternion(0, 0, 0, 0));
+    }
+
+    void SpawnStartLine()
+    {
+        Vector3 initPosition = new Vector3(-0.17f, 2.52f, -15.1f);
+        PhotonNetwork.Instantiate(startLinePrefab.name, initPosition, new Quaternion(0, 0, 0, 0));
     }
 }
