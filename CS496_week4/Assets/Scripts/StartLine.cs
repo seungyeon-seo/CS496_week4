@@ -7,12 +7,14 @@ public class StartLine : MonoBehaviour
 {
     bool isFull;
     int count;
+    TextMesh startText;
 
     // Start is called before the first frame update
     void Start()
     {
         isFull = false;
-        count = 0; 
+        count = 0;
+        startText = GameObject.Find("startText").GetComponent<TextMesh>();
     }
 
     private void FixedUpdate()
@@ -24,10 +26,20 @@ public class StartLine : MonoBehaviour
         if (isFull)
         {
             count++;
-        }
-        if (isFull && count >= 100)
-        {
-            PhotonNetwork.Destroy(gameObject);
+            if (count == 1)
+            {
+                startText.text = "3";
+            } else if (count >= 50 && count < 100)
+            {
+                startText.text = "2";
+            } else if (count >= 100 && count < 150)
+            {
+                startText.text = "1";
+            } else if (count >= 150)
+            {
+                startText.text = null;
+                PhotonNetwork.Destroy(gameObject);
+            }
         }
     }
 }
