@@ -31,11 +31,15 @@ public class MapCharacterControls : MonoBehaviourPun
 	public Vector3 checkPoint;
 	private bool slide = false;
 
+	Image resultImage;
+
 	void Start()
 	{
 		// get the distance to ground
 		distToGround = GetComponent<Collider>().bounds.extents.y;
 		cam = GameObject.Find("Main Camera");
+		resultImage = GameObject.Find("Panel").GetComponent<Image>();
+		resultImage.color = new Color(255, 255, 255, 0);
 		if (photonView.IsMine)
 			GameObject.Find("Camera Holder").GetComponent<CameraManager>().setTarget(gameObject);
 	}
@@ -242,16 +246,17 @@ public class MapCharacterControls : MonoBehaviourPun
 	void CheckWinner()
 	{
 		Vector3 pos = gameObject.transform.position;
-		TextMesh winText = GameObject.Find("winText").GetComponent<TextMesh>();
 		if (pos.z >= 129)
 		{
 			if (photonView.IsMine)
 			{
-				winText.text = "You WIN";
+				resultImage.sprite = Resources.Load<Sprite>("images/winnerImage");
+				resultImage.color = new Color(255, 255, 255, 255);
 			}
 			else
 			{
-				winText.text = "You LOSE";
+				resultImage.sprite = Resources.Load<Sprite>("images/loserImage");
+				resultImage.color = new Color(255, 255, 255, 255);
 			}
 		}
 	}
