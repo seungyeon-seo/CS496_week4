@@ -2336,7 +2336,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapNumber: 2
-  playerPrefab: {fileID: 4862867088163164632, guid: 049b91e0400a3c3438f8ef9e9ac23d1a,
+  playerPrefab: {fileID: 1147752367711628, guid: 2abf19653d633114faedf3b60dc6c39f,
     type: 3}
   ballPrefab: {fileID: 6422163724054654083, guid: cff5bc80b4bdb454c9fe45ebc1ef26a1,
     type: 3}
@@ -4261,7 +4261,7 @@ PrefabInstance:
         type: 3}
       propertyPath: target
       value: 
-      objectReference: {fileID: 4862867088163164636, guid: 049b91e0400a3c3438f8ef9e9ac23d1a,
+      objectReference: {fileID: 4268597916284530, guid: 2abf19653d633114faedf3b60dc6c39f,
         type: 3}
     - target: {fileID: 8125632388429620747, guid: 74fe7eed3ad8ec84bb8770355f363fda,
         type: 3}
