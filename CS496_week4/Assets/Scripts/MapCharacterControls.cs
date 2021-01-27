@@ -18,6 +18,7 @@ public class MapCharacterControls : MonoBehaviourPun
 	public float rotateSpeed = 25f; //Speed the player rotate
 	private Vector3 moveDir;
 	public GameObject cam;
+	public int mapNumber;
 	private Rigidbody rb;
 
 	private float distToGround;
@@ -30,6 +31,7 @@ public class MapCharacterControls : MonoBehaviourPun
 
 	public Vector3 checkPoint;
 	private bool slide = false;
+	bool isEnd = false;
 
 	Image resultImage;
 
@@ -38,6 +40,13 @@ public class MapCharacterControls : MonoBehaviourPun
 		// get the distance to ground
 		distToGround = GetComponent<Collider>().bounds.extents.y;
 		cam = GameObject.Find("Main Camera");
+		if (PhotonNetwork.IsMasterClient) // TODO: reverse
+		{
+			Transform trans = GameObject.Find("Camera Holder").GetComponent<Transform>();
+			//trans.position = new Vector3(0f, 0f, 50f);
+			//trans.rotation = new Quaternion(0, 180, 0, 0);
+			cam.transform.rotation = new Quaternion(0, 180, 0, 0);
+		}
 		resultImage = GameObject.Find("Panel").GetComponent<Image>();
 		resultImage.color = new Color(255, 255, 255, 0);
 		if (photonView.IsMine)
@@ -166,7 +175,7 @@ public class MapCharacterControls : MonoBehaviourPun
 				slide = false;
 			}
 		}
-		CheckRespawn();
+		CheckPosition();
 	}
 
 	float CalculateJumpVerticalSpeed()
@@ -228,6 +237,19 @@ public class MapCharacterControls : MonoBehaviourPun
 			canMove = true;
 		}
 	}
+	
+	void CheckPosition()
+    {
+		switch (mapNumber)
+        {
+			case 2:
+				CheckRespawn();
+				break;
+			case 3:
+				CheckWinner();
+				break;
+        }
+    }
 	void CheckRespawn()
 	{
 		Vector3 pos = gameObject.transform.position;
@@ -246,18 +268,29 @@ public class MapCharacterControls : MonoBehaviourPun
 	void CheckWinner()
 	{
 		Vector3 pos = gameObject.transform.position;
-		if (pos.z >= 129)
+		if (mapNumber == 2 && pos.z >= 129)
 		{
-			if (photonView.IsMine)
-			{
-				resultImage.sprite = Resources.Load<Sprite>("images/winnerImage");
-				resultImage.color = new Color(255, 255, 255, 255);
-			}
-			else
-			{
-				resultImage.sprite = Resources.Load<Sprite>("images/loserImage");
-				resultImage.color = new Color(255, 255, 255, 255);
-			}
+			SetWinner(true);
+		}
+		else if (mapNumber == 3 && pos.y <= -3 && !isEnd)
+        {
+			SetWinner(false);
+        }
+	}
+	
+	void SetWinner(bool type)
+    {
+		isEnd = true;
+
+		if ((photonView.IsMine && type) || (!photonView.IsMine && !type))
+		{
+			resultImage.sprite = Resources.Load<Sprite>("images/winnerImage");
+			resultImage.color = new Color(255, 255, 255, 255);
+		}
+		else
+		{
+			resultImage.sprite = Resources.Load<Sprite>("images/loserImage");
+			resultImage.color = new Color(255, 255, 255, 255);
 		}
 	}
 }

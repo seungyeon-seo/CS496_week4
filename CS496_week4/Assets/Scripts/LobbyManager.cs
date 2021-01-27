@@ -60,6 +60,6 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         infoText.text = "Connected with Room";
-        PhotonNetwork.LoadLevel("Map2");
+        PhotonNetwork.LoadLevel("Map3");
     }
 }

@@ -27,11 +27,18 @@ public class GameManager : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
+        Cursor.visible = true;
         SpawnPlayer();
-        time = 0;
-        if (PhotonNetwork.IsMasterClient)
+        
+        switch (mapNumber)
         {
-            SpawnStartLine();
+            case 2:
+                time = 0;
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    SpawnStartLine();
+                }
+                break;
         }
     }
 
@@ -63,12 +70,27 @@ public class GameManager : MonoBehaviourPunCallbacks
                 initPosition = new Vector3(-0.41f, 1.23f, -0.09f);
                 rotation = new Quaternion(0, 0, 0, 0);
                 break;
+
             case 2:
                 initPosition = new Vector3(-3f + (2*playerNumber), 1.3f, -20f);
                 rotation = new Quaternion(0, 5, 0, 0);
                 break;
-        }
 
+            case 3:
+                if (!PhotonNetwork.IsMasterClient)
+                {
+                    // Ground
+                    initPosition = new Vector3(0.09f, 1.23f, -0.09f);
+                    rotation = new Quaternion(0, 0, 0, 0);
+                }
+                else
+                {
+                    // Ground (1)
+                    initPosition = new Vector3(0.09f, 1.23f, 48.5f);
+                    rotation = new Quaternion(0, 180, 0, 0);
+                }
+                break;
+        }
         PhotonNetwork.Instantiate(playerPrefab.name, initPosition, rotation);
     }
 

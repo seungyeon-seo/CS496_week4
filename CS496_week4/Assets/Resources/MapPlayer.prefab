@@ -59,6 +59,7 @@ MonoBehaviour:
   maxFallSpeed: 20
   rotateSpeed: 25
   cam: {fileID: 0}
+  mapNumber: 2
   checkPoint: {x: 0, y: 0, z: 0}
 --- !u!1001 &6884065302804039678
 PrefabInstance:
