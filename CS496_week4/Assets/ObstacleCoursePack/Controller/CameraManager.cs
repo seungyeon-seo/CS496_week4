@@ -50,7 +50,7 @@ public class CameraManager : MonoBehaviour {
 		float speed = d * followSpeed; //Set speed regardless of fps
 									   // Vector3 targetPosition = Vector3.Lerp(transform.position, target.position, speed); //Bring the camera closer to the player interpolating with the velocity(0.5 half, 1 everything)
 		Vector3 pos;
-		if (PhotonNetwork.IsMasterClient && mapNum == 3)
+		if (mapNum == 3 && PhotonNetwork.IsMasterClient)
 			pos = new Vector3(target.position.x, target.position.y, target.position.z + 17);
 		else
 			pos = target.position;

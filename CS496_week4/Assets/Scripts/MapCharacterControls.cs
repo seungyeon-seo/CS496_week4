@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(CapsuleCollider))]
@@ -31,9 +32,6 @@ public class MapCharacterControls : MonoBehaviourPun
 
 	public Vector3 checkPoint;
 	private bool slide = false;
-	bool isEnd = false;
-
-	Image resultImage;
 
 	void Start()
 	{
@@ -47,8 +45,6 @@ public class MapCharacterControls : MonoBehaviourPun
 			//trans.rotation = new Quaternion(0, 180, 0, 0);
 			cam.transform.rotation = new Quaternion(0, 180, 0, 0);
 		}
-		resultImage = GameObject.Find("Panel").GetComponent<Image>();
-		resultImage.color = new Color(255, 255, 255, 0);
 		if (photonView.IsMine)
 			GameObject.Find("Camera Holder").GetComponent<CameraManager>().setTarget(gameObject);
 	}
@@ -272,7 +268,7 @@ public class MapCharacterControls : MonoBehaviourPun
 		{
 			SetWinner(true);
 		}
-		else if (mapNumber == 3 && pos.y <= -3 && !isEnd)
+		else if (mapNumber == 3 && pos.y <= -3)
         {
 			SetWinner(false);
         }
@@ -280,17 +276,13 @@ public class MapCharacterControls : MonoBehaviourPun
 	
 	void SetWinner(bool type)
     {
-		isEnd = true;
-
 		if ((photonView.IsMine && type) || (!photonView.IsMine && !type))
 		{
-			resultImage.sprite = Resources.Load<Sprite>("images/winnerImage");
-			resultImage.color = new Color(255, 255, 255, 255);
+			SceneManager.LoadScene("WinScene");
 		}
 		else
 		{
-			resultImage.sprite = Resources.Load<Sprite>("images/loserImage");
-			resultImage.color = new Color(255, 255, 255, 255);
+			SceneManager.LoadScene("LoseScene");
 		}
 	}
 }
