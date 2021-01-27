@@ -19,7 +19,7 @@ public class StartLine : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (PhotonNetwork.PlayerList.Length >= 2)
+        if (PhotonNetwork.PlayerList.Length >= 1)
         {
             isFull = true;
         }

@@ -6,72 +6,107 @@ using System.Collections;
 
 public class MyCharacterControls : MonoBehaviour
 {
-
-	public float speed = 10.0f;
-	public float airVelocity = 8f;
-	public float gravity = 10.0f;
-	public float maxVelocityChange = 10.0f;
-	public float jumpHeight = 2.0f;
-	public float maxFallSpeed = 20.0f;
-	public float rotateSpeed = 25f; //Speed the player rotate
-	private Vector3 moveDir;
+	// externel components
 	public GameObject cam;
+	private Animator anim;
+	private CapsuleCollider coll;
 	private Rigidbody rb;
 
-	private float distToGround;
+	// parameters
+	public float gravity = 10.0f;
+	public float moveSpeed = 10.0f;
+	public float rotateSpeed = 25f; //Speed the player rotate
+	public float fallSpeed = 0.0f;
+	public float airSpeed = 8f;
+	public float maxFallSpeed = 100000.0f;
+	public float jumpHeight = 10.0f;
+	public float maxVelocityChange = 10.0f;
+	public int flipCount = 1;
 
+	// variables related to controlling movement
+	public Vector3 moveVelocity;
+	public Vector3 jumpVelocity;
+	public Vector3 fallVelocity;
+
+	private Vector3 moveDir = Vector3.zero;
+	private bool isMove;
+	private bool isJump;
+	private bool isWalk;
+	private bool isFlip;
+	private bool isGrounded;
+
+	// Externel Force
+	[SerializeField]
+	private float distToGround;
 	private bool canMove = true; //If player is not hitted
 	private bool isStuned = false;
 	private bool wasStuned = false; //If player was stunned before get stunned another time
 	private float pushForce;
 	private Vector3 pushDir;
-
-	public Vector3 checkPoint;
 	private bool slide = false;
+
+	// Checkpoint
+	public Vector3 checkPoint;
 
 	void Start()
 	{
-		// get the distance to ground
-		distToGround = GetComponent<Collider>().bounds.extents.y;
+		coll = gameObject.GetComponent<CapsuleCollider>();
+		anim = gameObject.GetComponentInChildren<Animator>();
 		cam = GameObject.Find("Main Camera");
-	}
-
-	bool IsGrounded()
-	{
-		return Physics.Raycast(transform.position, -Vector3.up, distToGround + 0.1f);
 	}
 
 	void Awake()
 	{
 		rb = GetComponent<Rigidbody>();
 		rb.freezeRotation = true;
-		rb.useGravity = false;
-
+		rb.useGravity = true;
 		checkPoint = transform.position;
-		Cursor.visible = false;
+		Cursor.visible = true;
 	}
 
-	void FixedUpdate()
+	private void FixedUpdate()
 	{
-		if (canMove)
+		Debug.Log("GROUND : " + isGrounded.ToString() + distToGround.ToString());
+		// GRAVITY
+		rb.AddForce(new Vector3(0, -gravity * GetComponent<Rigidbody>().mass, 0));
+
+		// CANNOT MOVE
+		if (!canMove)
 		{
-			if (moveDir.x != 0 || moveDir.z != 0)
+			//Debug.Log("CANNOT MOVE");
+			rb.velocity = pushDir * pushForce;
+		}
+		// CAN MOVE
+		else
+		{
+			//Debug.Log("CAN MOVE");
+
+			// Rotation
+			if (isMove)
 			{
 				Vector3 targetDir = moveDir; //Direction of the character
 
 				targetDir.y = 0;
 				if (targetDir == Vector3.zero)
+				{
 					targetDir = transform.forward;
+				}
 				Quaternion tr = Quaternion.LookRotation(targetDir); //Rotation of the character to where it moves
 				Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, Time.deltaTime * rotateSpeed); //Rotate the character little by little
 				transform.rotation = targetRotation;
 			}
 
-			if (IsGrounded())
+			// Ground - RUN
+			if (isGrounded)
 			{
+				//Debug.Log("RUN");
 				// Calculate how fast we should be moving
 				Vector3 targetVelocity = moveDir;
-				targetVelocity *= speed;
+				targetVelocity *= moveSpeed;
+				if (isWalk)
+				{
+					targetVelocity *= 0.3f;
+				}
 
 				// Apply a force that attempts to reach our target velocity
 				Vector3 velocity = rb.velocity;
@@ -84,28 +119,40 @@ public class MyCharacterControls : MonoBehaviour
 				velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
 				velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
 				velocityChange.y = 0;
+
+				// Floor Slippery
 				if (!slide)
 				{
-					if (Mathf.Abs(rb.velocity.magnitude) < speed * 1.0f)
+					if (Mathf.Abs(rb.velocity.magnitude) < moveSpeed * 1.0f)
 						rb.AddForce(velocityChange, ForceMode.VelocityChange);
 				}
-				else if (Mathf.Abs(rb.velocity.magnitude) < speed * 1.0f)
+				else if (Mathf.Abs(rb.velocity.magnitude) < moveSpeed * 1.0f)
 				{
 					rb.AddForce(moveDir * 0.15f, ForceMode.VelocityChange);
 					//Debug.Log(rb.velocity.magnitude);
 				}
 
 				// Jump
-				if (IsGrounded() && Input.GetButton("Jump"))
+				if (isJump)
 				{
+					//Debug.Log("JUMP");
 					rb.velocity = new Vector3(velocity.x, CalculateJumpVerticalSpeed(), velocity.z);
 				}
+
+				// Reset Flip Count
+				flipCount = 1;
 			}
 			else
 			{
-				if (!slide)
+				//Debug.Log("NOT RUN");
+				if (isFlip && flipCount > 0)
 				{
-					Vector3 targetVelocity = new Vector3(moveDir.x * airVelocity, rb.velocity.y, moveDir.z * airVelocity);
+					flipCount -= 1;
+					rb.velocity = new Vector3(rb.velocity.x, CalculateJumpVerticalSpeed(), rb.velocity.z);
+				}
+				else if (!slide)
+				{
+					Vector3 targetVelocity = new Vector3(moveDir.x * airSpeed, rb.velocity.y, moveDir.z * airSpeed);
 					Vector3 velocity = rb.velocity;
 					Vector3 velocityChange = (targetVelocity - velocity);
 					velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
@@ -114,31 +161,32 @@ public class MyCharacterControls : MonoBehaviour
 					if (velocity.y < -maxFallSpeed)
 						rb.velocity = new Vector3(velocity.x, -maxFallSpeed, velocity.z);
 				}
-				else if (Mathf.Abs(rb.velocity.magnitude) < speed * 1.0f)
+				else if (Mathf.Abs(rb.velocity.magnitude) < moveSpeed * 1.0f)
 				{
 					rb.AddForce(moveDir * 0.15f, ForceMode.VelocityChange);
 				}
 			}
 		}
-		else
-		{
-			rb.velocity = pushDir * pushForce;
-		}
-		// We apply gravity manually for more tuning control
-		rb.AddForce(new Vector3(0, -gravity * GetComponent<Rigidbody>().mass, 0));
 	}
 
-	private void Update()
+
+	void Update()
 	{
+		// moveDir & isJump
 		float h = Input.GetAxis("Horizontal");
 		float v = Input.GetAxis("Vertical");
-
 		Vector3 v2 = v * cam.transform.forward; //Vertical axis to which I want to move with respect to the camera
 		Vector3 h2 = h * cam.transform.right; //Horizontal axis to which I want to move with respect to the camera
 		moveDir = (v2 + h2).normalized; //Global position to which I want to move in magnitude 1
+		isMove = moveDir.x != 0 || moveDir.z != 0;
+		isJump = Input.GetKey(KeyCode.Space);
+		isWalk = Input.GetKey(KeyCode.LeftShift);// Input.GetButton("Jump");
+		isFlip = Input.GetKey(KeyCode.LeftControl);// Input.GetButton("Jump");
+		isGrounded = IsGrounded();
 
+		// Hit Check
 		RaycastHit hit;
-		if (Physics.Raycast(transform.position, -Vector3.up, out hit, distToGround + 0.1f))
+		if (Physics.Raycast(coll.bounds.center, Vector3.down, out hit, coll.bounds.extents.y + 0.01f))
 		{
 			if (hit.transform.tag == "Slide")
 			{
@@ -149,20 +197,76 @@ public class MyCharacterControls : MonoBehaviour
 				slide = false;
 			}
 		}
+
+		//Animation Effect
+		if (isGrounded)
+		{
+			// Idle : 0
+			// Run : 1
+			// Jump : 2
+			// Fall : 3
+			// Flip : 4
+			// Walk : 5
+			if (isWalk)
+			{
+				anim.SetInteger("AnimationPar", 5);
+			}
+			else if (isFlip && flipCount > 0)
+			{
+				anim.SetInteger("AnimationPar", 4);
+			}
+			else if (isJump)
+			{
+				anim.SetInteger("AnimationPar", 2);
+			}
+			else if (isMove)
+			{
+				anim.SetInteger("AnimationPar", 1);
+			}
+			else
+			{
+				anim.SetInteger("AnimationPar", 0);
+			}
+		}
+		else
+		{
+			if (isFlip)
+			{
+				anim.SetInteger("AnimationPar", 4);
+			}
+			else
+			{
+				anim.SetInteger("AnimationPar", 3);
+			}
+		}
+	}
+
+	bool IsGrounded()
+	{
+		RaycastHit hit;
+		Physics.Raycast(coll.bounds.center, Vector3.down, out hit, coll.bounds.extents.y + .01f);
+		if (hit.collider != null)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	float CalculateJumpVerticalSpeed()
 	{
-		// From the jump height and gravity we deduce the upwards speed 
-		// for the character to reach at the apex.
 		return Mathf.Sqrt(2 * jumpHeight * gravity);
 	}
 
 	public void HitPlayer(Vector3 velocityF, float time)
 	{
+		Debug.Log("HIT_PLAYER");
 		rb.velocity = velocityF;
 
 		pushForce = velocityF.magnitude;
+		//pushForce = velocityF.magnitude * 500;
 		pushDir = Vector3.Normalize(velocityF);
 		StartCoroutine(Decrease(velocityF.magnitude, time));
 	}
