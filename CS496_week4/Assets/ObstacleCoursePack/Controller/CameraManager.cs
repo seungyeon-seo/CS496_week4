@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Photon.Pun;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -27,10 +28,13 @@ public class CameraManager : MonoBehaviour {
 	public float lookAngle; //Angle the camera has on the Y axis
 	public float tiltAngle; //Angle the camera has up / down
 
+	int mapNum;
+
 	public void Init()
 	{
 		camTrans = Camera.main.transform;
 		pivot = camTrans.parent;
+		mapNum = GameObject.Find("GameManager").GetComponent<GameManager>().mapNumber;
 	}
 
 	public void setTarget(GameObject obj)
@@ -39,9 +43,18 @@ public class CameraManager : MonoBehaviour {
     }
 
 	void FollowTarget(float d)
-	{ //Function that makes the camera follow the player
+	{
+		if (target == null)
+			return;
+		//Function that makes the camera follow the player
 		float speed = d * followSpeed; //Set speed regardless of fps
-		Vector3 targetPosition = Vector3.Lerp(transform.position, target.position, speed); //Bring the camera closer to the player interpolating with the velocity(0.5 half, 1 everything)
+									   // Vector3 targetPosition = Vector3.Lerp(transform.position, target.position, speed); //Bring the camera closer to the player interpolating with the velocity(0.5 half, 1 everything)
+		Vector3 pos;
+		if (mapNum == 3 && PhotonNetwork.IsMasterClient)
+			pos = new Vector3(target.position.x, target.position.y, target.position.z + 17);
+		else
+			pos = target.position;
+		Vector3 targetPosition = Vector3.Lerp(transform.position, pos, speed); //Bring the camera closer to the player interpolating with the velocity(0.5 half, 1 everything)
 		transform.position = targetPosition; //Update the camera position
 	}
 
@@ -105,6 +118,7 @@ public class CameraManager : MonoBehaviour {
 		}
 		// check if the distance is greater than the max camera distance;
 		if (dist > cameraDist) dist = cameraDist;
+		dist = cameraDist;
 		camTrans.localPosition = new Vector3(0, 0, -dist);
 	}
 

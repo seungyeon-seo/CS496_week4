@@ -16,7 +16,7 @@ public class Bounce : MonoBehaviour
 			if (collision.gameObject.tag == "Player")
 			{
 				hitDir = contact.normal;
-				collision.gameObject.GetComponent<CharacterControls>().HitPlayer(-hitDir * force, stunTime);
+				collision.gameObject.GetComponent<MapCharacterControls>().HitPlayer(-hitDir * force, stunTime);
 				return;
 			}
 		}

@@ -14,6 +14,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
+        Cursor.visible = true;
         infoText.text = "Connecting To Master Service...";
         PhotonNetwork.GameVersion = "1";
         PhotonNetwork.ConnectUsingSettings();
@@ -59,6 +60,6 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         infoText.text = "Connected with Room";
-        PhotonNetwork.LoadLevel("SampleScene");
+        PhotonNetwork.LoadLevel("Map2");
     }
 }
