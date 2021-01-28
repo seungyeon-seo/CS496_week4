@@ -40,10 +40,10 @@ public class MenuChoice : MonoBehaviour
                 SceneManager.LoadScene("LobbyScene");
                 break;
             case 1:
-                Debug.Log("LoginScene");
+                SceneManager.LoadScene("LobbyScene2");
                 break;
             case 2:
-                Debug.Log("GameInfoScene");
+                SceneManager.LoadScene("GameInfo");
                 break;
             case 3:
                 SceneManager.LoadScene("MenuScene");

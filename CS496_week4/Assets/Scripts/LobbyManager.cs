@@ -10,6 +10,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public Button joinButton;
     public Text infoText;
     public Text playerName;
+    public int type;
 
     // Start is called before the first frame update
     void Start()
@@ -60,6 +61,14 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         infoText.text = "Connected with Room";
-        PhotonNetwork.LoadLevel("Map2");
+        switch (type)
+        {
+            case 0:
+                PhotonNetwork.LoadLevel("Map2");
+                break;
+            case 1:
+                PhotonNetwork.LoadLevel("Map3");
+                break;
+        }
     }
 }
