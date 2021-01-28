@@ -120,7 +120,7 @@ public class MyCharacterControls : MonoBehaviour
 				velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
 				velocityChange.y = 0;
 
-				// Floor Slippery
+				// Slide floor
 				if (!slide)
 				{
 					if (Mathf.Abs(rb.velocity.magnitude) < moveSpeed * 1.0f)

@@ -23,12 +23,23 @@ public class GameManager : MonoBehaviourPunCallbacks
     public int playerNumber;
 
     int time;
+    List<Vector3> checkPoint;
     
     // Start is called before the first frame update
     void Start()
     {
         Cursor.visible = true;
-        SpawnPlayer();
+
+        checkPoint = new List<Vector3>();
+        if (PhotonNetwork.IsMasterClient)
+            checkPoint.Add(new Vector3(-3f, 1.3f, -20f));
+        else
+            checkPoint.Add(new Vector3(-1f, 1.3f, -20f));
+        checkPoint.Add(new Vector3(-0.52f, 16.1f, 106.49f));
+        checkPoint.Add(new Vector3(32.27f, 30.125f, 158.89f));
+        checkPoint.Add(new Vector3(128.06f, 30.13f, 157.5f));
+
+        SpawnPlayer(0);
         
         switch (mapNumber)
         {
@@ -58,7 +69,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         
     }
 
-    public void SpawnPlayer()
+    public void SpawnPlayer(int type)
     {
         playerNumber = PhotonNetwork.LocalPlayer.ActorNumber - 1;
         Vector3 initPosition;
@@ -72,7 +83,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                 break;
 
             case 2:
-                initPosition = new Vector3(-3f + (2*playerNumber), 1.3f, -20f);
+                initPosition = checkPoint[type];
                 rotation = new Quaternion(0, 5, 0, 0);
                 break;
 

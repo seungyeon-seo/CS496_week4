@@ -49,7 +49,7 @@ public class MapCharacterControls : MonoBehaviourPun
 	private bool slide = false;
 
 	// Checkpoint
-	public Vector3 checkPoint;
+	int checkPoint;
 	int mapNumber;
 
 	void Start()
@@ -77,7 +77,7 @@ public class MapCharacterControls : MonoBehaviourPun
 		rb.freezeRotation = true;
 		rb.useGravity = false;
 
-		checkPoint = transform.position;
+		checkPoint = 0;
 		Cursor.visible = true;
 	}
 
@@ -137,7 +137,7 @@ public class MapCharacterControls : MonoBehaviourPun
 				velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
 				velocityChange.y = 0;
 
-				// Floor Slippery
+				// Slide Floor
 				if (!slide)
 				{
 					if (Mathf.Abs(rb.velocity.magnitude) < moveSpeed * 1.0f)
@@ -187,7 +187,6 @@ public class MapCharacterControls : MonoBehaviourPun
 
 	void Update()
 	{
-
 		// Check Conditions
 		CheckWinner();
 		if (!photonView.IsMine)
@@ -298,14 +297,6 @@ public class MapCharacterControls : MonoBehaviourPun
 		StartCoroutine(Decrease(velocityF.magnitude, time));
 	}
 
-	public void LoadCheckPoint()
-	{
-		if (!photonView.IsMine)
-			return;
-
-		transform.position = checkPoint;
-	}
-
 	private IEnumerator Decrease(float value, float duration)
 	{
 		if (isStuned)
@@ -344,6 +335,7 @@ public class MapCharacterControls : MonoBehaviourPun
 		switch (mapNumber)
         {
 			case 2:
+				SetCheckPoint();
 				CheckRespawn();
 				break;
 			case 3:
@@ -351,22 +343,34 @@ public class MapCharacterControls : MonoBehaviourPun
 				break;
         }
     }
+
 	void CheckRespawn()
 	{
 		Vector3 pos = gameObject.transform.position;
 		if (pos.y < -2.19)
 		{
 			PhotonNetwork.Destroy(gameObject);
-			GameObject.Find("GameManager").GetComponent<GameManager>().SpawnPlayer();
+			GameObject.Find("GameManager").GetComponent<GameManager>().SpawnPlayer(checkPoint);
 		}
 	}
+
+	void SetCheckPoint()
+    {
+		Vector3 pos = transform.position;
+		if (checkPoint == 0 && pos.z >= 101)
+			checkPoint = 1;
+		else if (checkPoint == 1 && pos.x >= 34)
+			checkPoint = 2;
+		else if (checkPoint == 2 && pos.x >= 125.6)
+			checkPoint = 3;
+    }
 
 	void CheckWinner()
 	{
 		Vector3 pos = gameObject.transform.position;
-		if (mapNumber == 2 && pos.z >= 129)
+		if (mapNumber == 2 && pos.x >= 125 && pos.z <= 110)
 		{
-			// SetWinner(true);
+			SetWinner(true);
 		}
 		else if (mapNumber == 3 && pos.y <= -3)
         {

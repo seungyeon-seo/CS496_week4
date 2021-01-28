@@ -49,6 +49,7 @@ public class MovableObs : MonoBehaviour
 				startPos = new Vector3(startPos.x - distance, startPos.y, startPos.z);
 				transform.position += Vector3.right * offset;
 				break;
+
 		}
 	}
 	private void setType()
