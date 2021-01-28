@@ -93,13 +93,11 @@ public class MapCharacterControls : MonoBehaviourPun
 		// CANNOT MOVE
 		if (!canMove)
 		{
-			//Debug.Log("CANNOT MOVE");
 			rb.velocity = pushDir * pushForce;
 		}
 		// CAN MOVE
 		else
 		{
-			//Debug.Log("CAN MOVE");
 
 			// Rotation
 			if (isMove)
@@ -119,7 +117,6 @@ public class MapCharacterControls : MonoBehaviourPun
 			// Ground - RUN
 			if (isGrounded)
 			{
-				//Debug.Log("RUN");
 				// Calculate how fast we should be moving
 				Vector3 targetVelocity = moveDir;
 				targetVelocity *= moveSpeed;
@@ -164,7 +161,6 @@ public class MapCharacterControls : MonoBehaviourPun
 			}
 			else
 			{
-				//Debug.Log("NOT RUN");
 				if (isFlip && flipCount > 0)
 				{
 					flipCount -= 1;
@@ -358,12 +354,7 @@ public class MapCharacterControls : MonoBehaviourPun
 	void CheckRespawn()
 	{
 		Vector3 pos = gameObject.transform.position;
-		if (pos.x < -6.95 || pos.x > 6.67)
-		{
-			PhotonNetwork.Destroy(gameObject);
-			GameObject.Find("GameManager").GetComponent<GameManager>().SpawnPlayer();
-		}
-		else if (pos.y < -2.19)
+		if (pos.y < -2.19)
 		{
 			PhotonNetwork.Destroy(gameObject);
 			GameObject.Find("GameManager").GetComponent<GameManager>().SpawnPlayer();
@@ -375,7 +366,7 @@ public class MapCharacterControls : MonoBehaviourPun
 		Vector3 pos = gameObject.transform.position;
 		if (mapNumber == 2 && pos.z >= 129)
 		{
-			SetWinner(true);
+			// SetWinner(true);
 		}
 		else if (mapNumber == 3 && pos.y <= -3)
         {
