@@ -366,7 +366,7 @@ public class MapCharacterControls : MonoBehaviourPun
 		Vector3 pos = gameObject.transform.position;
 		if (mapNumber == 2 && pos.z >= 129)
 		{
-			SetWinner(true);
+			// SetWinner(true);
 		}
 		else if (mapNumber == 3 && pos.y <= -3)
         {
